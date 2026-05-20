@@ -1,29 +1,33 @@
 <?php
+// 1. Carga de forma obligatoria los modelos y componentes necesarios
 require_once 'models/Usuario.php';
-require_once 'models/Contacto.php'; 
+require_once 'models/Contacto.php';
 require_once 'controllers/UsuarioController.php';
 
-$controller = new UsuarioController(); 
-$page = $_GET['page'] ?? 'inicio';
-$action = $_GET['action'] ?? '';
+// 2. Instancia controlador central del patrón MVC
+$controller = new UsuarioController();
 
-// formularios
-if ($action == 'registrar') {
-    $controller->registrar();
-} elseif ($action == 'enviar_contacto') {
-    $controller->procesarContacto(); 
+// 3. Sistema de Enrutamiento (Front Controller) para solicitudes de procesamiento (POST)
+if (isset($_GET['action'])) {
+    $action = $_GET['action'];
+    
+    if ($action === 'registrar') {
+        $controller->registrar();
+    } elseif ($action === 'enviar_contacto') {
+        $controller->procesarContacto();
+    } else {
+        $controller->index();
+    }
 } 
-// páginas
+// 4. Sistema de Enrutamiento para navegación de vistas estáticas (GET)
 else {
-    switch ($page) {
-        case 'registro':
-            $controller->registro();
-            break;
-        case 'contacto':
-            $controller->contacto();
-            break;
-        default:
-            $controller->index();
-            break;
+    $page = $_GET['page'] ?? 'home';
+
+    if ($page === 'registro') {
+        $controller->registro();
+    } elseif ($page === 'contacto') {
+        $controller->contacto();
+    } else {
+        $controller->index();
     }
 }
